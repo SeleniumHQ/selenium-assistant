@@ -1,0 +1,19 @@
+{
+  "action": "opened",
+  "issue": {
+    "number": 1,
+    "body": "\uD83D\uDE80 Feature Proposal",
+    "user": {
+      "login": "seleniumhq"
+    }
+  },
+  "sender": {
+    "type": "real"
+  },
+  "repository": {
+    "name": "testing-things",
+    "owner": {
+      "login": "seleniumhq"
+    }
+  }
+}

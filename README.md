@@ -1,6 +1,6 @@
 # selenium-assistant
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that An assistant to help Selenium maintainers keep the project in good shape
+> A GitHub App built with [Probot](https://github.com/probot/probot) that assists Selenium maintainers keep the project in good shape
 
 ## Setup
 
@@ -20,4 +20,4 @@ For more, check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-[ISC](LICENSE) © 2019 Selenium Developers <selenium-developers@googlegroups.com>
+[Apache-2.0](LICENSE) © 2019 Selenium Developers

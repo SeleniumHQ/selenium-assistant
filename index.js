@@ -15,8 +15,11 @@ module.exports = async app => {
     const config = await getConfig(context, 'selenium-assistant.yml')
     if (!context.isBot && config) {
       // The bot greets the user first
-      let comment = context.issue({ body: config.openIssueGreetingComment })
-      await context.github.issues.createComment(comment)
+      let comment
+      if (config.openIssueGreetingComment) {
+        comment = context.issue({ body: config.openIssueGreetingComment })
+        await context.github.issues.createComment(comment)
+      }
       const issueBody = context.payload.issue.body.toLowerCase()
       if (issueBody.includes('💬') || issueBody.includes('questions and help')) {
         // It is a question, the bot closes it

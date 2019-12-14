@@ -65,19 +65,11 @@ describe('Selenium Assistant', () => {
     await probot.receive({ name: 'issues', payload: issueToBeClosed })
   })
 
-  test('new issues which are not questions get a greeting and a label', async () => {
+  test('new issues which are not questions get a label', async () => {
     // Test that we correctly return the repo config
     nock(apiBasePath)
       .get('/repos/seleniumhq/testing-things/contents/.github/selenium-assistant.yml')
       .reply(200, config)
-
-    // Test that a greeting comments and a closing comment are posted
-    nock(apiBasePath)
-      .post('/repos/seleniumhq/testing-things/issues/1/comments', (body) => {
-        expect(body).toMatchObject({ body: repoConfigContent.openIssueGreetingComment })
-        return true
-      })
-      .reply(200)
 
     // Test that it checks if the label exists
     nock(apiBasePath)
@@ -98,7 +90,6 @@ describe('Selenium Assistant', () => {
     // Add the label to the issue
     nock(apiBasePath)
       .post('/repos/seleniumhq/testing-things/issues/1/labels', (body) => {
-        console.log(body)
         expect(body).toContain('needs-triaging')
         return true
       })

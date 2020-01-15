@@ -63,6 +63,9 @@ module.exports = async app => {
   async function issueIsOneOfTheSupportedTypes (issueBody, config) {
     if (config.issueTypes) {
       return config.issueTypes.some((issueType) => {
+        console.log(issueType.toLowerCase())
+        console.log(issueBody.toLowerCase())
+        console.log(issueBody.toLowerCase().startsWith(issueType.toLowerCase()))
         return issueBody.toLowerCase().startsWith(issueType.toLowerCase())
       })
     }

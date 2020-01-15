@@ -5,6 +5,7 @@ const { Probot } = require('probot')
 // Requiring our fixtures
 const issueToBeClosed = require('./fixtures/issues.question_to_be_closed')
 const issueToBeTriaged = require('./fixtures/issues.needs_to_be_triaged')
+const issueTypeNotSupportedToBeClosed = require('./fixtures/issues.not_supported_type')
 const config = require('./fixtures/repos.contents.config')
 const fs = require('fs')
 const path = require('path')
@@ -97,6 +98,39 @@ describe('Selenium Assistant', () => {
 
     // Receive a webhook event
     await probot.receive({ name: 'issues', payload: issueToBeTriaged })
+  })
+
+  test('non supported issue types get closed', async () => {
+    // Test that we correctly return the repo config
+    nock(apiBasePath)
+      .get('/repos/seleniumhq/testing-things/contents/.github/selenium-assistant.yml')
+      .reply(200, config)
+
+    // Test that a greeting comments and a closing comment are posted
+    nock(apiBasePath)
+      .post('/repos/seleniumhq/testing-things/issues/1/comments', (body) => {
+        expect(body).toMatchObject({ body: repoConfigContent.openIssueGreetingComment })
+        return true
+      })
+      .reply(200)
+
+    nock(apiBasePath)
+      .post('/repos/seleniumhq/testing-things/issues/1/comments', (body) => {
+        expect(body).toMatchObject({ body: repoConfigContent.closeNotSupportedIssueTypesComment })
+        return true
+      })
+      .reply(200)
+
+    // Test that the issue is closed
+    nock(apiBasePath)
+      .patch('/repos/seleniumhq/testing-things/issues/1', (body) => {
+        expect(body).toMatchObject({ state: 'closed' })
+        return true
+      })
+      .reply(200)
+
+    // Receive a webhook event
+    await probot.receive({ name: 'issues', payload: issueTypeNotSupportedToBeClosed })
   })
 
   afterEach(() => {

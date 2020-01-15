@@ -14,24 +14,23 @@ module.exports = async app => {
   async function triageOpenedIssues (context) {
     const config = await getConfig(context, 'selenium-assistant.yml')
     if (!context.isBot && config) {
-      // The bot greets the user first
-      const issueBody = context.payload.issue.body.toLowerCase()
-      if (issueBody.includes('💬') || issueBody.includes('questions and help')) {
-        let comment
-        if (config.openIssueGreetingComment) {
-          comment = context.issue({ body: config.openIssueGreetingComment })
-          await context.github.issues.createComment(comment)
-        }
-        // It is a question, the bot closes it
-        comment = context.issue({ body: config.closeQuestionsAndSupportRequestsComment })
-        await context.github.issues.createComment(comment)
+      const issueBody = context.payload.issue.body
+      if (await issueIsAQuestionOrSupportRequest(issueBody, config)) {
+        await greetUser(context, config)
+        // Post comment indicating that this is a question or a request for support
+        await postComment(context, config.closeQuestionsAndSupportRequestsComment)
         if (config.closeQuestionsAndSupportRequests) {
-          await context.github.issues.update({
-            owner: context.issue().owner,
-            repo: context.issue().repo,
-            issue_number: context.issue().number,
-            state: 'closed'
-          })
+          // If enabled in the config, close the issue
+          await closeIssue(context)
+        }
+      } else if (!await issueIsOneOfTheSupportedTypes(issueBody, config)) {
+        await greetUser(context, config)
+        // Issue does not start with any of the configured strings, therefore this is not a supported issue type
+        // Post a comment indicating that this is not a supported issue type
+        await postComment(context, config.closeNotSupportedIssueTypesComment)
+        if (config.closeNotSupportedIssueTypes) {
+          // If enabled in the config, close the issue
+          await closeIssue(context)
         }
       } else {
         // The bot cannot triage it, it labels the issue
@@ -44,6 +43,43 @@ module.exports = async app => {
         })
       }
     }
+  }
+
+  async function greetUser (context, config) {
+    if (config.openIssueGreetingComment) {
+      const comment = context.issue({ body: config.openIssueGreetingComment })
+      return context.github.issues.createComment(comment)
+    }
+  }
+
+  async function issueIsAQuestionOrSupportRequest (issueBody, config) {
+    if (config.questionsAndSupportRequestsStrings) {
+      return config.questionsAndSupportRequestsStrings.some((questionsAndSupportRequestsString) => {
+        return issueBody.toLowerCase().includes(questionsAndSupportRequestsString.toLowerCase())
+      })
+    }
+  }
+
+  async function issueIsOneOfTheSupportedTypes (issueBody, config) {
+    if (config.issueTypes) {
+      return config.issueTypes.some((issueType) => {
+        return issueBody.toLowerCase().startsWith(issueType.toLowerCase())
+      })
+    }
+  }
+
+  async function postComment (context, commentBody) {
+    const comment = context.issue({ body: commentBody })
+    return context.github.issues.createComment(comment)
+  }
+
+  async function closeIssue (context) {
+    return context.github.issues.update({
+      owner: context.issue().owner,
+      repo: context.issue().repo,
+      issue_number: context.issue().number,
+      state: 'closed'
+    })
   }
 
   async function ensureNeedsTriagingLabelExists (context) {

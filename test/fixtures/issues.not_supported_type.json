@@ -1,0 +1,19 @@
+{
+  "action": "opened",
+  "issue": {
+    "number": 1,
+    "body": "java.lang.NoSuchMethodError: org.openqa.selenium.support.ui.Wait.until",
+    "user": {
+      "login": "seleniumhq"
+    }
+  },
+  "sender": {
+    "type": "real"
+  },
+  "repository": {
+    "name": "testing-things",
+    "owner": {
+      "login": "seleniumhq"
+    }
+  }
+}

@@ -40,11 +40,12 @@ closeQuestionsAndSupportRequestsComment: >
 
   Thank you for your contributions.
 
-# Issue types that the repo supports. When an issue is created, the heading should be one of these strings (from the issue templates).
+# Issue types that the repo supports. When an issue is created, the heading should be one of these strings
+# (from the issue templates). To take into account markdown characters, put the whole string in quotations.
 issueTypes:
-  - 🐛 Bug Report
-  - 🚀 Feature Proposal
-  - 💥 Regression Report
+  - "## 🐛 Bug Report"
+  - "## 🚀 Feature Proposal"
+  - "## 💥 Regression Report"
 
 closeNotSupportedIssueTypes: true
 

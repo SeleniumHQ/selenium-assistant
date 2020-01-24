@@ -45,7 +45,6 @@ closeQuestionsAndSupportRequestsComment: >
 issueTypes:
   - "## 🐛 Bug Report"
   - "## 🚀 Feature Proposal"
-  - "## 💥 Regression Report"
 
 closeNotSupportedIssueTypes: true
 
@@ -59,8 +58,6 @@ closeNotSupportedIssueTypesComment: >
   * 🐛 Bug Report (bugs found in a recent release)
 
   * 🚀 Feature Proposal (a useful feature you would like to propose)
-
-  * 💥 Regression Report (a supported feature is not working anymore)
 
 
   Issue templates help this project to stay in shape, please use them and fill them out completely.
